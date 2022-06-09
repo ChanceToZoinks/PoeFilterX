@@ -18,9 +18,12 @@ build: $(RELEASES_PATH)
 $(RELEASES_PATH):
 	dotnet publish "$(CSPROJ_PATH)" -c $(CONFIGURATION) -r $(FLAVOR) --self-contained $(SELF_CONTAINED) -o "$(RELEASES_PATH)" /p:Version="$(VERSION)-$(FLAVOR)" /p:DebugType=$(DEBUG_TYPE) /p:DebugSymbols=$(DEBUG_SYMBOLS) /p:PublishSingleFile=$(SINGLE_FILE) -f $(FRAMEWORK) --verbosity $(VERBOSITY)
 
-.PHONY: clean
 clean:
 	rm -rf $(RELEASES_PATH)
 
+# neither test works on linux. tested on Ubuntu 20.04
 test:
-	env -v $(shell grep -v '^#' $(TEST_ENVS) | xargs -d '\n') $(RELEASES_PATH)/PoeFilterX build --p $(TEST_FILTER) --v true
+	env -v $(shell grep -v '^#' $(TEST_ENVS) | xargs -d '\n') sh -c 'echo $$POEFILTERFX_ExaltTier_Currency; $(RELEASES_PATH)/PoeFilterX build --p $(TEST_FILTER) --v true'
+
+test2:
+	export POEFILTERFX_ExaltTier_Currency="Exalted Orb" & echo $$POEFILTERFX_ExaltTier_Currency & $(RELEASES_PATH)/PoeFilterX build --p $(TEST_FILTER) --v true
